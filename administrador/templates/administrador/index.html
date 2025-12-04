@@ -17,7 +17,11 @@
                 <li><a href="{% url 'productos:lista_productos' %}">Gestión de productos</a></li>
                 <li><a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a></li>
                 <li><a href="{% url 'administrador:reportes' %}">Reportes</a></li>
-                <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+
             </ul>
         </nav>
     </aside>

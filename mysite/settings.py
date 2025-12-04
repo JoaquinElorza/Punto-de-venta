@@ -46,8 +46,8 @@ INSTALLED_APPS = [
 
 # Configuración de autenticación
 LOGIN_URL = 'login'  # Nombre de la URL de login
-LOGOUT_REDIRECT_URL = 'login'  # Donde redirigir después del logout
-LOGIN_REDIRECT_URL = 'redirect_after_login'
+LOGOUT_REDIRECT_URL = '/login/'  # Donde redirigir después del logout
+#LOGIN_REDIRECT_URL = 'redirect_after_login'
 
 
 MIDDLEWARE = [
