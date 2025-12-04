@@ -43,12 +43,3 @@ def home_view(request):
     """
     # RENDERIZA EL TEMPLATE EN LA RUTA CORRECTA
     return render(request, 'usuarios/home.html', {'user': request.user})
-
-@login_required
-def logout_view(request):
-    """
-    Vista para cerrar sesión.
-    """
-    logout(request)
-    messages.success(request, 'Has cerrado sesión exitosamente.')
-    return redirect('login')

@@ -1,326 +1,261 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Punto de Venta</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .product-card {
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .producto-card {
             cursor: pointer;
             transition: transform 0.2s;
+            border: 1px solid #dee2e6;
         }
-        .product-card:hover {
+
+        .producto-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #0d6efd;
         }
-        .venta-actual {
+
+        .venta-container {
             max-height: 500px;
             overflow-y: auto;
         }
-        .categoria-badge {
-            font-size: 0.8em;
+
+        .badge-stock {
+            font-size: 0.7em;
+        }
+        
+        .logout-form {
+            display: inline;
         }
     </style>
 </head>
-<!-- Agrega esto en la parte superior del body -->
-<nav class="navbar navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'ventas:punto_venta' %}">
-            🛒 Punto de Venta
-        </a>
-        <div class="d-flex align-items-center text-white">
-            <span class="me-3">
-                <i class="fas fa-user"></i> {{ request.user.username }}
-            </span>
-            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </a>
-        </div>
-    </div>
-</nav>
+
 <body>
-    <div class="container-fluid">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'ventas:punto_venta' %}">
+                <i class="fas fa-cash-register me-2"></i> PUNTO DE VENTA
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-item nav-link text-white">
+                    <i class="fas fa-user me-1"></i> {{ user.username }}
+                </span>
+                
+                <!-- Formulario de logout con POST -->
+                <form method="post" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link nav-link text-white p-0" 
+                            style="background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Resto del código HTML permanece igual -->
+    <div class="container-fluid mt-4">
         <div class="row">
-            <!-- Columna de productos -->
+            <!-- Columna de Productos -->
             <div class="col-md-8">
-                <div class="card mt-3">
+                <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fas fa-store"></i> Productos Disponibles
-                        </h4>
+                        <h5 class="mb-0">
+                            <i class="fas fa-boxes me-2"></i> Productos Disponibles
+                            <span class="badge bg-light text-dark float-end">
+                                {{ productos.count }} productos
+                            </span>
+                        </h5>
                     </div>
                     <div class="card-body">
-                        <!-- Barra de búsqueda -->
-                        <div class="input-group mb-3">
-                            <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto...">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Grid de productos -->
-                        <div class="row" id="productosGrid">
+                        {% if productos %}
+                        <div class="row row-cols-2 row-cols-md-4 g-3">
                             {% for producto in productos %}
-                            <div class="col-md-3 mb-3">
-                                <div class="card product-card" data-producto-id="{{ producto.id }}" data-producto-nombre="{{ producto.nombre }}" data-producto-precio="{{ producto.precio_venta }}">
-                                    <div class="card-body">
-                                        <h6 class="card-title">{{ producto.nombre }}</h6>
-                                        <p class="card-text text-muted mb-1">{{ producto.descripcion|truncatechars:30 }}</p>
-                                        <p class="card-text mb-1">
-                                            <strong>Precio: ${{ producto.precio_venta }}</strong>
-                                        </p>
-                                        <p class="card-text">
-                                            <small class="text-muted">Stock: {{ producto.stock }}</small>
-                                        </p>
-                                        {% if producto.categoria %}
-                                        <span class="badge bg-secondary categoria-badge">{{ producto.categoria.nombre }}</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                            {% empty %}
-                            <div class="col-12 text-center">
-                                <p class="text-muted">No hay productos disponibles</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Columna de venta actual -->
-            <div class="col-md-4">
-                <div class="card mt-3">
-                    <div class="card-header bg-success text-white">
-                        <h4 class="mb-0">
-                            <i class="fas fa-shopping-cart"></i> Venta Actual
-                            <span class="badge bg-light text-dark float-end" id="itemsCount">{{ venta.detalles.count }}</span>
-                        </h4>
-                    </div>
-                    <div class="card-body venta-actual">
-                        <!-- Lista de productos en la venta -->
-                        <div id="listaVenta">
-                            {% for detalle in detalles %}
-                            <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2" id="detalle-{{ detalle.id }}">
-                                <div>
-                                    <h6 class="mb-0">{{ detalle.producto.nombre }}</h6>
-                                    <small class="text-muted">
-                                        {{ detalle.cantidad }} x ${{ detalle.precio_unitario }}
-                                    </small>
-                                </div>
-                                <div class="text-end">
-                                    <h6 class="mb-0">${{ detalle.subtotal }}</h6>
-                                    <button class="btn btn-sm btn-danger btn-eliminar" data-detalle-id="{{ detalle.id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            {% empty %}
-                            <p class="text-muted text-center">No hay productos en la venta</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <!-- Total y acciones -->
-                    <div class="card-footer">
-                        <div class="row mb-3">
                             <div class="col">
-                                <h4>Total: $<span id="totalVenta">{{ venta.total }}</span></h4>
+                                <div class="card producto-card h-100 text-decoration-none">
+                                    <!-- Corregí esta línea: estaba mal formateado -->
+                                    <a href="{% url 'ventas:agregar_producto' producto.id %}" 
+                                       class="btn btn-primary w-100 h-100 d-flex flex-column justify-content-center">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ producto.nombre }}</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                {{ producto.descripcion|truncatechars:40|default:"Sin descripción" }}
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <span class="h5 text-success mb-0">
+                                                    ${{ producto.precio }}
+                                                </span>
+                                                <span class="badge {% if producto.stock > 10 %}bg-success{% elif producto.stock > 0 %}bg-warning{% else %}bg-danger{% endif %} badge-stock">
+                                                    {% if producto.stock > 0 %}
+                                                    Stock: {{ producto.stock }}
+                                                    {% else %}
+                                                    Agotado
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
+                            {% endfor %}
                         </div>
-                        
-                        <!-- Formulario de pago -->
-                        <form id="formPago">
-                            <div class="mb-3">
-                                <label for="pagaCon" class="form-label">Paga con:</label>
-                                <input type="number" step="0.01" class="form-control" id="pagaCon" value="{{ venta.paga_con }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Cambio:</label>
-                                <h5 id="cambio">$0.00</h5>
-                            </div>
-                        </form>
-                        
-                        <!-- Botones de acción -->
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-success btn-lg" id="btnFinalizar">
-                                <i class="fas fa-check-circle"></i> Finalizar Venta
-                            </button>
-                            <button class="btn btn-danger" id="btnCancelar">
-                                <i class="fas fa-times-circle"></i> Cancelar Venta
-                            </button>
-                            <a href="{% url 'ventas:historial_ventas' %}" class="btn btn-info">
-                                <i class="fas fa-history"></i> Historial
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay productos disponibles</p>
+                            <a href="{% url 'productos:lista_productos' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i> Agregar Productos
                             </a>
                         </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna de Venta Actual -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shopping-cart me-2"></i> Venta Actual
+                            <span class="badge bg-light text-dark float-end">
+                                {{ venta.detalles.count }} items
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="card-body venta-container">
+                        {% if venta.detalles.all %}
+                        {% for detalle in venta.detalles.all %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <div>
+                                <h6 class="mb-1">{{ detalle.producto.nombre }}</h6>
+                                <small class="text-muted">
+                                    {{ detalle.cantidad }} x ${{ detalle.precio_unitario }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-1">${{ detalle.subtotal }}</h6>
+                                <a href="{% url 'ventas:eliminar_detalle' detalle.id %}" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Eliminar este producto de la venta?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay productos en la venta</p>
+                            <p class="small text-muted">Haz clic en un producto para agregarlo</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer">
+                        <!-- Total -->
+                        <div class="row mb-3">
+                            <div class="col">
+                                <h4 class="mb-0">Total: ${{ venta.total }}</h4>
+                            </div>
+                        </div>
+
+                        <!-- Formulario de Pago -->
+                        <form method="post" action="{% url 'ventas:finalizar_venta' venta.id %}"
+                            onsubmit="return validarPago()">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="paga_con" class="form-label">Paga con:</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="paga_con"
+                                    name="paga_con" required>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check-circle me-2"></i> Finalizar Venta
+                                </button>
+
+                                <a href="{% url 'ventas:cancelar_venta' venta.id %}" class="btn btn-danger"
+                                    onclick="return confirm('¿Cancelar venta actual? Se restaurará el stock.')">
+                                    <i class="fas fa-times-circle me-2"></i> Cancelar Venta
+                                </a>
+
+                                <a href="{% url 'ventas:historial_ventas' %}" class="btn btn-info">
+                                    <i class="fas fa-history me-2"></i> Historial de Ventas
+                                </a>
+
+                                <a href="{% url 'productos:lista_productos' %}" class="btn btn-secondary">
+                                    <i class="fas fa-box me-2"></i> Administrar Productos
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para cantidad -->
-    <div class="modal fade" id="modalCantidad" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar cantidad</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="productoNombre"></p>
-                    <div class="input-group">
-                        <input type="number" id="cantidadProducto" class="form-control" value="1" min="1">
-                        <button class="btn btn-primary" id="btnAgregar">Agregar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
-        let productoSeleccionado = null;
-        let ventaId = null;
-        
-        // Cuando se hace clic en un producto
-        $('.product-card').click(function() {
-            productoSeleccionado = {
-                id: $(this).data('producto-id'),
-                nombre: $(this).data('producto-nombre'),
-                precio: $(this).data('producto-precio')
-            };
-            
-            $('#productoNombre').text(productoSeleccionado.nombre + ' - $' + productoSeleccionado.precio);
-            $('#cantidadProducto').val(1);
-            $('#modalCantidad').modal('show');
-        });
-        
-        // Agregar producto a la venta
-        $('#btnAgregar').click(function() {
-            if (!productoSeleccionado) return;
-            
-            const cantidad = $('#cantidadProducto').val();
-            
-            $.ajax({
-                url: "{% url 'ventas:agregar_producto' %}",
-                type: 'POST',
-                data: {
-                    'producto_id': productoSeleccionado.id,
-                    'cantidad': cantidad,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert(response.error);
-                    }
-                },
-                error: function(xhr) {
-                    try {
-                        const error = JSON.parse(xhr.responseText);
-                        alert(error.error);
-                    } catch {
-                        alert('Error al agregar el producto');
-                    }
-                }
-            });
-            
-            $('#modalCantidad').modal('hide');
-        });
-        
-        // Eliminar producto de la venta
-        $('.btn-eliminar').click(function() {
-            const detalleId = $(this).data('detalle-id');
-            
-            if (confirm('¿Eliminar este producto de la venta?')) {
-                $.ajax({
-                    url: `/ventas/eliminar-detalle/${detalleId}/`,
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $(`#detalle-${detalleId}`).remove();
-                            $('#totalVenta').text(response.total);
-                            $('#itemsCount').text(response.items_count);
-                        }
-                    }
-                });
-            }
-        });
-        
-        // Calcular cambio en tiempo real
-        $('#pagaCon').on('input', function() {
-            const total = parseFloat($('#totalVenta').text());
-            const pagaCon = parseFloat($(this).val()) || 0;
-            const cambio = pagaCon - total;
-            
-            if (cambio >= 0) {
-                $('#cambio').text('$' + cambio.toFixed(2));
-            } else {
-                $('#cambio').text('$0.00');
-            }
-        });
-        
-        // Finalizar venta
-        $('#btnFinalizar').click(function() {
-            const pagaCon = $('#pagaCon').val();
-            const total = parseFloat($('#totalVenta').text());
-            
-            if (parseFloat(pagaCon) < total) {
+        function validarPago() {
+            const total = parseFloat('{{ venta.total }}') || 0;
+            const pagaCon = parseFloat(document.getElementById('paga_con').value) || 0;
+
+            if (pagaCon < total) {
                 alert('El pago es menor al total. Por favor ingrese una cantidad mayor.');
-                return;
+                return false;
             }
-            
-            if (confirm('¿Finalizar venta?')) {
-                $.ajax({
-                    url: "{% url 'ventas:finalizar_venta' %}",
-                    type: 'POST',
-                    data: {
-                        'paga_con': pagaCon,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            alert(`Venta #${response.venta_id} completada\nCambio: $${response.cambio}`);
-                            location.reload();
-                        } else {
-                            alert(response.error);
-                        }
-                    }
-                });
+
+            if (pagaCon === 0) {
+                alert('Por favor ingrese la cantidad con la que paga el cliente.');
+                return false;
             }
-        });
-        
-        // Cancelar venta
-        $('#btnCancelar').click(function() {
-            if (confirm('¿Cancelar venta actual? Se restaurará el stock de los productos.')) {
-                window.location.href = "{% url 'ventas:cancelar_venta' %}";
+
+            if (total === 0) {
+                alert('No hay productos en la venta.');
+                return false;
             }
-        });
-        
-        // Buscar producto
-        $('#buscarProducto').on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            
-            $('.product-card').each(function() {
-                const nombre = $(this).data('producto-nombre').toLowerCase();
-                if (nombre.includes(searchTerm)) {
-                    $(this).parent().show();
+
+            return confirm('¿Finalizar venta?');
+        }
+
+        // Actualizar cambio en tiempo real
+        document.getElementById('paga_con').addEventListener('input', function () {
+            const total = parseFloat('{{ venta.total }}') || 0;
+            const pagaCon = parseFloat(this.value) || 0;
+            const cambio = pagaCon - total;
+
+            if (cambio >= 0) {
+                // Mostrar mensaje de cambio
+                const cambioElement = document.getElementById('cambio-mensaje');
+                if (!cambioElement) {
+                    const div = document.createElement('div');
+                    div.id = 'cambio-mensaje';
+                    div.className = 'alert alert-info mt-2';
+                    div.innerHTML = `Cambio: $${cambio.toFixed(2)}`;
+                    this.parentNode.appendChild(div);
                 } else {
-                    $(this).parent().hide();
+                    cambioElement.innerHTML = `Cambio: $${cambio.toFixed(2)}`;
                 }
-            });
+            } else {
+                const cambioElement = document.getElementById('cambio-mensaje');
+                if (cambioElement) {
+                    cambioElement.remove();
+                }
+            }
         });
     </script>
 </body>

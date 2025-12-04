@@ -10,5 +10,4 @@ urlpatterns = [
     path('finalizar/<int:venta_id>/', views.finalizar_venta, name='finalizar_venta'),
     path('cancelar/<int:venta_id>/', views.cancelar_venta, name='cancelar_venta'),
     path('historial/', views.historial_ventas, name='historial_ventas'),
-    path('cerrar-sesion/', views.cerrar_sesion_personalizado, name='cerrar_sesion'),
 ]

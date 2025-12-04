@@ -24,23 +24,35 @@ from django.contrib.auth.decorators import login_required
 def home_redirect(request):
     return redirect('ventas:punto_venta')
 
+from django.contrib import admin
+from django.urls import include, path
+from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
+# Vista personalizada para la página principal (redirección a ventas)
+def home_redirect(request):
+    return redirect('ventas:punto_venta')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # URLs de autenticación
+    # Login
     path('login/', auth_views.LoginView.as_view(
         template_name='login.html',
-        redirect_authenticated_user=True  # Esto redirige si ya está autenticado
+        redirect_authenticated_user=True
     ), name='login'),
-    
+
+    # Logout (usando LogoutView de Django)
     path('logout/', auth_views.LogoutView.as_view(
-        next_page='/login/'
+        next_page='login'
     ), name='logout'),
-    
-    # URLs de las apps
+
+    # Apps
     path('productos/', include('productos.urls')),
     path('ventas/', include('ventas.urls')),
-    
-    # Página principal - redirige a ventas
+
+    # Página principal
     path('', login_required(home_redirect), name='home'),
 ]
