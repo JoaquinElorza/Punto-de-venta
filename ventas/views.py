@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from .models import Venta, DetalleVenta
 from productos.models import Producto
 from decimal import Decimal
@@ -32,10 +33,6 @@ def agregar_producto(request, producto_id):
     venta_activa = Venta.objects.filter(completada=False).last()
     if not venta_activa:
         venta_activa = Venta.objects.create()
-    
-    # Verificar stock
-    if producto.stock <= 0:
-        return redirect('ventas:punto_venta')
     
     # Verificar si el producto ya está en la venta
     detalle_existente = venta_activa.detalles.filter(producto=producto).first()
