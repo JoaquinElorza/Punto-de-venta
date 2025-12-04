@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel Administrador{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'administrador/css/base.css' %}">
+</head>
+
+<body>
+
+<header>
+    Panel del Administrador
+</header>
+
+<nav>
+    <a href="{% url 'administrador:index' %}">Inicio</a>
+    <a href="{% url 'productos:lista_productos' %}">Productos</a>
+    <a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a>
+    <a href="{% url 'administrador:reportes' %}">Reportes</a>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    Punto de Venta – Administrador
+</footer>
+
+</body>
+</html>

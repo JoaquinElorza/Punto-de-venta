@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Producto
-from .forms import ProductoForm
+from .forms import ProductoForm, ProductoBusquedaForm
 
 @login_required
 def lista_productos(request):
-    productos = Producto.objects.all()
-    return render(request, 'productos/lista.html', {'productos': productos})
+    form_busqueda = ProductoBusquedaForm(request.GET or None)
+    productos = form_busqueda.filtrar() if form_busqueda.is_valid() else Producto.objects.all()
+    
+    return render(request, 'productos/lista.html', {
+        'productos': productos,
+        'form_busqueda': form_busqueda
+    })
 
 @login_required
 def crear_producto(request):

@@ -20,6 +20,8 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+from usuarios.views import redirect_after_login
+
 # Vista personalizada para la página principal (redirección a ventas)
 def home_redirect(request):
     return redirect('ventas:punto_venta')
@@ -41,7 +43,8 @@ urlpatterns = [
     # Login
     path('login/', auth_views.LoginView.as_view(
         template_name='login.html',
-        redirect_authenticated_user=True
+        redirect_authenticated_user=True,
+        next_page='redirect_after_login'    
     ), name='login'),
 
     # Logout (usando LogoutView de Django)
@@ -53,6 +56,15 @@ urlpatterns = [
     path('productos/', include('productos.urls')),
     path('ventas/', include('ventas.urls')),
 
-    # Página principal
+    path('redirect/', redirect_after_login, name='redirect_after_login'),
+
+    # Página principal para vendedor
     path('', login_required(home_redirect), name='home'),
+
+    # Página principal para admin
+    path('administrador/', include(('administrador.urls', 'administrador'), namespace='administrador')),
+
+
+    
+
 ]

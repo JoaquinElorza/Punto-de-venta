@@ -41,12 +41,14 @@ INSTALLED_APPS = [
     'usuarios.apps.UsuariosConfig',
     'productos.apps.ProductosConfig',
     'ventas.apps.VentasConfig',
+    'administrador',
 ]
 
 # Configuración de autenticación
 LOGIN_URL = 'login'  # Nombre de la URL de login
-LOGIN_REDIRECT_URL = 'home'  # Donde redirigir después del login exitoso
 LOGOUT_REDIRECT_URL = 'login'  # Donde redirigir después del logout
+LOGIN_REDIRECT_URL = 'redirect_after_login'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,7 +126,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -132,11 +137,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-# Configuración de login/logout
-LOGIN_URL = 'login'  # Nombre de la URL de login
-LOGIN_REDIRECT_URL = 'ventas:punto_venta'  # Redirige aquí después de login
-LOGOUT_REDIRECT_URL = 'login'  # Redirige aquí después de logout
 
 # Para redirigir usuarios autenticados que intenten acceder al login
 AUTHENTICATION_BACKENDS = [

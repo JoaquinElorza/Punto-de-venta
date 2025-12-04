@@ -6,27 +6,11 @@ class ProductoForm(forms.ModelForm):
         model = Producto
         fields = ['nombre', 'descripcion', 'precio', 'stock', 'activo']
         widgets = {
-            'nombre': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre del producto'
-            }),
-            'descripcion': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Descripción del producto'
-            }),
-            'precio': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': '0'
-            }),
-            'stock': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '0'
-            }),
-            'activo': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
+            'nombre': forms.TextInput(),
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
+            'precio': forms.NumberInput(),
+            'stock': forms.NumberInput(),
+            'activo': forms.CheckboxInput(),
         }
         labels = {
             'nombre': 'Nombre',
@@ -48,20 +32,17 @@ class ProductoForm(forms.ModelForm):
             raise forms.ValidationError('El precio debe ser mayor a 0')
         return precio
 
-# Formulario para búsqueda de productos
+
 class ProductoBusquedaForm(forms.Form):
     nombre = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Buscar por nombre...'
-        })
+        widget=forms.TextInput()
     )
     
     activo = forms.ChoiceField(
         choices=[('', 'Todos'), ('1', 'Activos'), ('0', 'Inactivos')],
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select()
     )
     
     def filtrar(self):

@@ -1,0 +1,80 @@
+{% extends "administrador/base.html" %}
+{% load static %}
+{% block title %}Administrador - Dashboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+<script src="{% static 'js/admin.js' %}" defer></script>
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <div class="brand">
+            <h1>Administrador</h1>
+        </div>
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="{% url 'administrador:index' %}" class="active">Dashboard</a></li>
+                <li><a href="{% url 'productos:lista_productos' %}">Gestión de productos</a></li>
+                <li><a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a></li>
+                <li><a href="{% url 'administrador:reportes' %}">Reportes</a></li>
+                <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Panel de control</h2>
+            <p class="subtitle">Resumen rápido del sistema</p>
+        </header>
+
+        <section class="cards">
+            <div class="card">
+                <h3>Productos</h3>
+                <p class="large">{{ productos_count|default:"-" }}</p>
+                <a href="{% url 'productos:lista_productos' %}" class="card-link">Gestionar productos</a>
+            </div>
+
+            <div class="card">
+                <h3>Ventas totales</h3>
+                <p class="large">{{ ventas_total|default:"-" }}</p>
+                <a href="{% url 'administrador:ventas_historial' %}" class="card-link">Ver historial</a>
+            </div>
+
+            <div class="card">
+                <h3>Reportes</h3>
+                <p class="large">Próximamente</p>
+                <a href="{% url 'administrador:reportes' %}" class="card-link">Ir a reportes</a>
+            </div>
+        </section>
+
+        <section class="recent">
+            <h3>Ventas recientes</h3>
+            {% if ventas_recentes %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Vendedor</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in ventas_recentes %}
+                    <tr>
+                        <td>{{ v.fecha }}</td>
+                        <td>{{ v.vendedor.username }}</td>
+                        <td>{{ v.resumen_productos }}</td>
+                        <td>{{ v.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay ventas recientes.</p>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock %}

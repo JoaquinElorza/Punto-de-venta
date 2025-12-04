@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Productos - Gestión{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+<script src="{% static 'js/admin.js' %}" defer></script>
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <div class="brand"><h1>Administrador</h1></div>
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="{% url 'administrador:dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'productos:list' %}" class="active">Gestión de productos</a></li>
+                <li><a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a></li>
+                <li><a href="{% url 'administrador:reportes' %}">Reportes</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Productos</h2>
+            <div class="actions">
+                <a href="{% url 'productos:create' %}" class="btn primary">Nuevo producto</a>
+            </div>
+        </header>
+
+        <section>
+            {% if products %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>{{ p.nombre }}</td>
+                        <td class="desc">{{ p.descripcion|default:"-" }}</td>
+                        <td>{{ p.precio }}</td>
+                        <td>{{ p.stock }}</td>
+                        <td>{% if p.activo %}Sí{% else %}No{% endif %}</td>
+                        <td>
+                            <a href="{% url 'productos:edit' p.id %}" class="btn small">Editar</a>
+
+                            <form method="post" action="{% url 'productos:delete' p.id %}" class="inline-form" onsubmit="return confirmDelete(event, '{{ p.nombre }}')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn small danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay productos registrados.</p>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock %}
