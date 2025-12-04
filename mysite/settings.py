@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'usuarios.apps.UsuariosConfig', # Agregar la aplicación 'usuarios'
+    'usuarios.apps.UsuariosConfig',
+    'productos.apps.ProductosConfig',
+    'ventas.apps.VentasConfig',
 ]
 
 # Configuración de autenticación
@@ -54,8 +56,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'productos'
+    'productos',
+    'ventas',
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 86400  # 24 horas
 
 ROOT_URLCONF = 'mysite.urls'
 
