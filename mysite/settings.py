@@ -56,8 +56,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'productos',
-    'ventas',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -134,3 +132,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# Configuración de login/logout
+LOGIN_URL = 'login'  # Nombre de la URL de login
+LOGIN_REDIRECT_URL = 'ventas:punto_venta'  # Redirige aquí después de login
+LOGOUT_REDIRECT_URL = 'login'  # Redirige aquí después de logout
+
+# Para redirigir usuarios autenticados que intenten acceder al login
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

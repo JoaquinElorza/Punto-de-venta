@@ -16,10 +16,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
+# Vista personalizada para la página principal (redirección a ventas)
+def home_redirect(request):
+    return redirect('ventas:punto_venta')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('usuarios/', include('usuarios.urls')),
-    path('ventas/', include('ventas.urls')),
+    
+    # URLs de autenticación
+    path('login/', auth_views.LoginView.as_view(
+        template_name='login.html',
+        redirect_authenticated_user=True  # Esto redirige si ya está autenticado
+    ), name='login'),
+    
+    path('logout/', auth_views.LogoutView.as_view(
+        next_page='/login/'
+    ), name='logout'),
+    
+    # URLs de las apps
     path('productos/', include('productos.urls')),
+    path('ventas/', include('ventas.urls')),
+    
+    # Página principal - redirige a ventas
+    path('', login_required(home_redirect), name='home'),
 ]

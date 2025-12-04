@@ -8,33 +8,52 @@ from .forms import DetalleVentaForm, VentaForm
 from productos.models import Producto
 import json
 from decimal import Decimal
+from django.contrib.auth import logout
 
 @login_required
 def punto_venta(request):
-    """Vista principal del punto de venta"""
+    """Vista principal del punto de venta - requiere login"""
     productos = Producto.objects.filter(activo=True, stock__gt=0)
     
-    # Crear una nueva venta vacía si no hay una en sesión
-    if 'venta_actual' not in request.session:
-        venta = Venta.objects.create()
-        request.session['venta_actual'] = venta.id
-    else:
-        venta_id = request.session['venta_actual']
-        venta = get_object_or_404(Venta, id=venta_id)
+    # Obtener o crear venta activa
+    venta_activa = Venta.objects.filter(completada=False).last()
+    if not venta_activa:
+        venta_activa = Venta.objects.create()
     
-    detalles = venta.detalles.all()
-    form_detalle = DetalleVentaForm()
-    form_venta = VentaForm(instance=venta)
+    detalles = venta_activa.detalles.all()
+    
+    # Almacenar ID de venta en sesión
+    request.session['venta_actual'] = venta_activa.id
     
     context = {
         'productos': productos,
-        'venta': venta,
+        'venta': venta_activa,
         'detalles': detalles,
-        'form_detalle': form_detalle,
-        'form_venta': form_venta,
+        'usuario': request.user,  # Pasar usuario al template
     }
-    
     return render(request, 'ventas/punto_venta.html', context)
+
+@login_required
+def cerrar_sesion_personalizado(request):
+    """Cierra sesión y limpia la venta actual"""
+    # Limpiar venta de sesión si existe
+    if 'venta_actual' in request.session:
+        venta_id = request.session['venta_activa']
+        try:
+            venta = Venta.objects.get(id=venta_id, completada=False)
+            # Restaurar stock si hay productos
+            for detalle in venta.detalles.all():
+                producto = detalle.producto
+                producto.stock += detalle.cantidad
+                producto.save()
+            venta.delete()
+        except:
+            pass
+        del request.session['venta_actual']
+    
+    # Cerrar sesión
+    logout(request)
+    return redirect('login')
 
 @login_required
 @require_POST
