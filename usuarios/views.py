@@ -4,19 +4,16 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 
 
-
-from django.contrib.auth.decorators import login_required
-
-@login_required
 def redirect_after_login(request):
     user = request.user
+    # recarga info del usuario
+    user.refresh_from_db()
 
-    if user.is_superuser:
-        return redirect('administrador:index')     # ADMIN
-    elif user.is_staff:
-        return redirect('ventas:punto_venta')      # VENDEDOR
+    if user.is_staff:  # admin
+        return redirect('administrador:index')
     else:
-        return redirect('home')                    # CLIENTE NORMAL
+        return redirect('ventas:punto_venta')
+
 
 
 @csrf_protect
