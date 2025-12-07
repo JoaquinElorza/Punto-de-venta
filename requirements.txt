@@ -1,0 +1,4 @@
+# requirements-deploy.txt
+fabric>=2.7
+invoke>=1.7
+paramiko>=2.11  # Para conexiones SSH mejoradas
