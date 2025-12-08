@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket de Venta</title>
+
+    <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
+</head>
+<body>
+
+<div class="ticket" id="ticket">
+    <div class="center">
+        <div class="bold">{{ negocio_nombre }}</div>
+        <div>{{ negocio_direccion }}</div>
+        <div>Tel: {{ negocio_telefono }}</div>
+        <div class="line"></div>
+        <div>Ticket: {{ folio }}</div>
+        <div>Fecha: {{ fecha }} {{ hora }}</div>
+        <div>Cajero: {{ cajero }}</div>
+    </div>
+
+    <div class="line"></div>
+
+    <table class="items">
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cant</th>
+            <th>P.U.</th>
+            <th>Importe</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in productos %}
+        <tr>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>{{ item.precio }}</td>
+            <td>{{ item.total }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="line"></div>
+
+    <table class="totales">
+        <tr>
+            <td class="right bold">Subtotal:</td>
+            <td class="right">${{ subtotal }}</td>
+        </tr>
+        <tr>
+            <td class="right bold">IVA:</td>
+            <td class="right">${{ iva }}</td>
+        </tr>
+        <tr>
+            <td class="right bold">TOTAL:</td>
+            <td class="right bold">${{ total }}</td>
+        </tr>
+        <tr>
+            <td class="right bold">Pago:</td>
+            <td class="right">${{ pago }}</td>
+        </tr>
+        <tr>
+            <td class="right bold">Cambio:</td>
+            <td class="right">${{ cambio }}</td>
+        </tr>
+    </table>
+
+    <div class="center small">
+        ¡Gracias por su compra!
+    </div>
+</div>
+
+<button id="btn-descargar" onclick="descargarTicket()">Descargar ticket</button>
+
+<script src="{% static 'js/ticket.js' %}"></script>
+</body>
+</html>
