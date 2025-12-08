@@ -1,0 +1,106 @@
+/* === ESTILO TIPO DASHBOARD PARA PROVEEDOR === */
+
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --muted: #666;
+  --accent: #2f6bed;
+  --danger: #d64545;
+  --border: #e6e9ef;
+}
+
+/* Estilos generales */
+body {
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 20px;
+  background-color: var(--bg);
+  color: #222;
+}
+
+/* Encabezados */
+h1, h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Botón "Atrás" arriba */
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  background-color: transparent;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: #222;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(15, 23, 36, 0.08);
+}
+
+thead {
+  background-color: #f3f5f9;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+tbody tr:hover {
+  background-color: #eef3ff;
+}
+
+/* Enlaces de acción (Editar / Eliminar) */
+a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+a:hover {
+  color: var(--danger);
+}
+
+/* Botón "Agregar nuevo producto" */
+a[href*="agregar_producto_proveedor"] {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: var(--accent);
+  color: #fff !important;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 10px;
+  border: none;
+  transition: 0.2s ease;
+}
+
+a[href*="agregar_producto_proveedor"]:hover {
+  background-color: #244fbd;
+}

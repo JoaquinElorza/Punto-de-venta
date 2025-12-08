@@ -1,0 +1,85 @@
+{% extends "administrador/base.html" %}
+{% load static %}
+{% block title %}Historial de ventas{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+<div class="dashboard">
+  <!-- Encabezado -->
+  <header class="admin-header">
+    <div>
+      <h2>Historial de ventas</h2>
+      <p class="subtitle">Listado de todas las ventas registradas en el sistema</p>
+    </div>
+   
+  </header>
+
+  <!-- Resumen rápido (opcional, usando datos que pongas en el contexto) -->
+  {% if total_ventas or total_ingresos %}
+  <section class="cards">
+    <div class="card">
+      <h3>Total de ventas</h3>
+      <p class="large">{{ total_ventas|default:"0" }}</p>
+    </div>
+    <div class="card">
+      <h3>Ingresos acumulados</h3>
+      <p class="large">
+        {% if total_ingresos %}
+          ${{ total_ingresos|floatformat:2 }}
+        {% else %}
+          $0.00
+        {% endif %}
+      </p>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Tabla historial -->
+  <section class="block">
+    <div class="block-header">
+      <h3>Listado de ventas</h3>
+      <p class="block-subtitle">Puedes consultar cada venta con su fecha, vendedor y total.</p>
+    </div>
+
+    {% if ventas %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>Vendedor</th>
+          <th>Descripción</th>
+          <th>Total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in ventas %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ v.fecha_hora|date:"Y-m-d H:i" }}</td>
+          <td>{{ v.vendedor.username }}</td>
+          <td class="desc">
+            {% if v.resumen_productos %}
+              {{ v.resumen_productos }}
+            {% else %}
+              Venta #{{ v.id }}
+            {% endif %}
+          </td>
+          <td>${{ v.total|floatformat:2 }}</td>
+          <td>
+            <!-- Aquí puedes luego enlazar a un detalle de venta si lo creas -->
+            {# <a href="{% url 'administrador:detalle_venta' v.id %}" class="btn small">Ver detalle</a> #}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty-state">No hay ventas registradas aún.</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

@@ -1,36 +1,35 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
-from productos.models import Producto
+from proveedores.models import Producto
+from django.conf import settings
+from django.db.models import Sum
+from decimal import Decimal
 
 class Venta(models.Model):
+    vendedor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="ventas"
+    )
     fecha_hora = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    paga_con = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    cambio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    paga_con = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    cambio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     completada = models.BooleanField(default=False)
-    
-    class Meta:
-        ordering = ['-fecha_hora']
-    
+
     def __str__(self):
-        return f"Venta #{self.id} - ${self.total}"
-    
+        return f"Venta #{self.id} - {self.total}"
+
     def calcular_total(self):
-        total = Decimal('0')
-        for detalle in self.detalles.all():
-            total += detalle.subtotal
-        self.total = total
-        self.save()
-        return total
-    
+        agg = self.detalles.aggregate(suma=Sum('subtotal'))
+        self.total = agg['suma'] or Decimal('0.00')
+
     def calcular_cambio(self):
-        if self.paga_con >= self.total:
+        if self.paga_con is not None:
             self.cambio = self.paga_con - self.total
-        else:
-            self.cambio = Decimal('0')
-        self.save()
-        return self.cambio
 
 class DetalleVenta(models.Model):
     venta = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name='detalles')

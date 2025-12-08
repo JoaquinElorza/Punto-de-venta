@@ -1,0 +1,261 @@
+/* admin.css - estilos para el módulo administrador */
+
+:root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --muted:#666;
+    --accent:#2f6bed;
+    --danger:#d64545;
+    --border:#e6e9ef;
+}
+
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--bg);
+    color:#222;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+}
+
+.admin-layout{
+    display:grid;
+    grid-template-columns: 260px 1fr;
+    min-height:100vh;
+}
+
+.admin-sidebar{
+    background:#0f1724;
+    color:#fff;
+    padding:20px;
+    border-right:1px solid rgba(255,255,255,0.03);
+}
+
+.brand h1{
+    margin:0 0 12px 0;
+    font-size:18px;
+    letter-spacing:0.4px;
+}
+
+.admin-nav ul{
+    list-style:none;
+    padding:0;
+    margin:12px 0 0 0;
+}
+
+.admin-nav a{
+    display:block;
+    color:rgba(255,255,255,0.9);
+    text-decoration:none;
+    padding:10px 12px;
+    border-radius:6px;
+    margin-bottom:6px;
+    font-size:14px;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active{
+    background:rgba(255,255,255,0.06);
+}
+
+.admin-main{
+    padding:24px;
+}
+
+.admin-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.admin-header h2{
+    margin:0;
+    font-size:20px;
+}
+
+.admin-header .subtitle{
+    margin:4px 0 0 0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* 🔥 CARDS: alineadas a la derecha, responsivas, autoajuste */
+.cards{
+    display:flex;                 /* Flexbox en lugar de grid */
+    justify-content:flex-end;     /* TODO a la derecha */
+    flex-wrap:wrap;               /* Que salten de línea si no caben */
+    gap:12px;                     /* Espacio entre cards */
+    margin-bottom:18px;
+}
+
+/* Cada card con ancho base y sin deformarse raro */
+.card{
+    flex:0 1 220px;               /* base 220px, se puede encoger pero no crecer infinito */
+    background:var(--card);
+    padding:14px;
+    border-radius:8px;
+    box-shadow:0 1px 2px rgba(15,23,36,0.04);
+    border:1px solid var(--border);
+}
+
+.card .large{
+    font-size:20px;
+    margin:8px 0;
+    font-weight:600;
+}
+
+.card-link{
+    font-size:13px;
+    color:var(--accent);
+    text-decoration:none;
+}
+
+/* TABLA */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.table thead tr{
+    background:#f3f5f9;
+}
+
+.table th,
+.table td{
+    padding:10px 12px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+    font-size:14px;
+    vertical-align:middle;
+}
+
+.table .desc{
+    max-width:340px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.btn{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:6px;
+    background:transparent;
+    border:1px solid var(--border);
+    text-decoration:none;
+    color:inherit;
+    font-size:14px;
+}
+
+.btn.primary{
+    background:var(--accent);
+    color:#fff;
+    border:0;
+}
+
+.btn.small{
+    padding:6px 9px;
+    font-size:13px;
+}
+
+.btn.danger{
+    background:var(--danger);
+    color:#fff;
+    border:0;
+}
+
+.inline-form{
+    display:inline;
+    margin:0;
+    padding:0;
+}
+
+.form-section{
+    max-width:720px;
+    background:var(--card);
+    padding:16px;
+    border-radius:8px;
+    border:1px solid var(--border);
+}
+
+.standard-form .form-row{
+    margin-bottom:12px;
+    display:flex;
+    flex-direction:column;
+}
+
+.standard-form label{
+    font-weight:600;
+    font-size:13px;
+    margin-bottom:6px;
+    color:#222;
+}
+
+.standard-form input[type="text"],
+.standard-form input[type="number"],
+.standard-form textarea,
+.standard-form select{
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-size:14px;
+}
+
+.form-actions{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.field-error{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:6px;
+}
+
+.placeholder{
+    background:var(--card);
+    padding:20px;
+    border-radius:8px;
+    border:1px solid var(--border);
+}
+
+/* responsive */
+@media (max-width:900px){
+    .admin-layout{
+        grid-template-columns:1fr;
+    }
+
+    .admin-sidebar{
+        display:flex;
+        gap:12px;
+        align-items:center;
+        padding:12px;
+    }
+
+    .admin-nav ul{
+        display:flex;
+        gap:6px;
+        overflow:auto;
+    }
+
+    .admin-nav a{
+        white-space:nowrap;
+    }
+
+    .admin-main{
+        padding:12px;
+    }
+}

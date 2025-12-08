@@ -42,11 +42,15 @@ INSTALLED_APPS = [
     'productos.apps.ProductosConfig',
     'ventas.apps.VentasConfig',
     'administrador',
+    'proveedores',
 ]
 
 # Configuración de autenticación
 LOGIN_URL = 'login'  # Nombre de la URL de login
 LOGOUT_REDIRECT_URL = '/login/'  # Donde redirigir después del logout
+LOGIN_URL = 'usuarios:login'
+LOGIN_REDIRECT_URL = 'proveedores:dashboard'
+LOGOUT_REDIRECT_URL = 'usuarios:login'
 #LOGIN_REDIRECT_URL = 'redirect_after_login'
 
 
@@ -127,9 +131,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -142,3 +146,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+# Usar el modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.CustomUser'

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Proveedor</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'proveedores/css/styl.css' %}">
+</head>
+<body>
+    <!-- Encabezado -->
+     <h1>Bienvenido {{ request.user.username }}</h1>
+    <a href="{% url 'administrador:index' %}" class="btn">Atras</a>
+    <h2>Mis Productos</h2>
+
+   
+
+    <!-- Tabla de productos -->
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr data-producto-id="{{ producto.id }}">
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>${{ producto.precio|floatformat:2 }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>{{ producto.stock }}</td>
+                <td>
+                    <a href="{% url 'proveedores:editar_producto' producto.id %}">Editar</a>
+                    <a href="{% url 'proveedores:eliminar_producto' producto.id %}" 
+                       onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                       Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No has agregado productos aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Botón para agregar producto -->
+    <a href="{% url 'proveedores:agregar_producto_proveedor' %}">Agregar nuevo producto</a>
+
+    <!-- Script JS -->
+    <script src="{% static 'js/scripts.js' %}"></script>
+    
+
+</body>
+</html>

@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Punto de Venta{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -12,16 +13,16 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="{% url 'ventas:punto_venta' %}" class="nav-logo">
-                🏪 PUNTO DE VENTA
+                PUNTO DE VENTA
             </a>
             <div class="nav-user">
-                <span class="user-info">👤 {{ user.username }}</span>
+                <span class="user-info"> {{ user.username }}</span>
                 
                 <!-- Formulario de logout -->
                 <form method="post" action="{% url 'logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="logout-btn">
-                        🚪 Cerrar Sesión
+                        Cerrar Sesión
                     </button>
                 </form>
             </div>
@@ -34,7 +35,8 @@
     </main>
 
     <!-- Scripts globales -->
-    <script src="/static/js/punto_venta.js"></script>
+    {# AQUÍ TU JS DEL POS: debe estar en ventas/static/ventas/js/punto_venta.js #}
+    <script src="{% static 'static/js/punto_venta.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

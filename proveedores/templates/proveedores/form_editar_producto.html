@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Producto</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'proveedores/css/stylea.css' %}">
+    <script src="{% static 'proveedores/js/form.js' %}" defer></script>
+</head>
+<body>
+    <h1>Editar producto: {{ producto.nombre }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- Contenedor de acciones -->
+        <div class="form-actions">
+            <button type="submit">Guardar cambios</button>
+            <a href="{% url 'proveedores:dashboard' %}" class="btn-secondary">Volver al dashboard</a>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "administrador/base.html" %}
+{% block title %}Productos registrados por proveedores{% endblock %}
+
+{% block content %}
+<h2>Listado de productos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Proveedor</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.proveedor.nombre }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.descripcion|default:"-" }}</td>
+            <td>${{ p.precio|floatformat:2 }}</td>
+            <td>{{ p.stock }}</td>
+            <td>{{ p.fecha_registro|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

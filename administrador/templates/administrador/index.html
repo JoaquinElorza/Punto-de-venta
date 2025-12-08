@@ -4,81 +4,139 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/admin.css' %}">
-<script src="{% static 'js/admin.js' %}" defer></script>
 
-<div class="admin-layout">
-    <aside class="admin-sidebar">
-        <div class="brand">
-            <h1>Administrador</h1>
-        </div>
-        <nav class="admin-nav">
-            <ul>
-                <li><a href="{% url 'administrador:index' %}" class="active">Dashboard</a></li>
-                <li><a href="{% url 'productos:lista_productos' %}">Gestión de productos</a></li>
-                <li><a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a></li>
-                <li><a href="{% url 'administrador:reportes' %}">Reportes</a></li>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Cerrar sesión</button>
-                </form>
+<div class="dashboard">
+  <!-- Encabezado -->
+  <header class="admin-header">
+    <div>
+      <h2>Panel de control</h2>
+      <p class="subtitle">Resumen general del punto de venta</p>
+    </div>
+  </header>
 
-            </ul>
-        </nav>
-    </aside>
+  <!-- Cards resumen -->
+  <section class="cards">
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Productos registrados</h3>
+      <p class="large">{{ productos_count|default:"0" }}</p>
+      <a href="{% url 'administrador:dashboard_productos' %}" class="card-link">
+        Gestionar productos
+      </a>
+    </div>
 
-    <main class="admin-main">
-        <header class="admin-header">
-            <h2>Panel de control</h2>
-            <p class="subtitle">Resumen rápido del sistema</p>
-        </header>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>Ventas totales</h3>
+      <p class="large">
+        {% if ventas_total %}
+          ${{ ventas_total|floatformat:2 }}
+        {% else %}
+          $0.00
+        {% endif %}
+      </p>
+      <a href="{% url 'administrador:ventas_historial' %}" class="card-link">
+        Ver historial de ventas
+      </a>
+    </div>
 
-        <section class="cards">
-            <div class="card">
-                <h3>Productos</h3>
-                <p class="large">{{ productos_count|default:"-" }}</p>
-                <a href="{% url 'productos:lista_productos' %}" class="card-link">Gestionar productos</a>
-            </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Reportes</h3>
+      <p class="large">Ver reportes</p>
+      <a href="{% url 'administrador:reportes' %}" class="card-link">
+        Ir a reportes
+      </a>
+    </div>
+  </section>
 
-            <div class="card">
-                <h3>Ventas totales</h3>
-                <p class="large">{{ ventas_total|default:"-" }}</p>
-                <a href="{% url 'administrador:ventas_historial' %}" class="card-link">Ver historial</a>
-            </div>
+  <!-- Contenido en dos columnas -->
+  <div class="dashboard-grid">
 
-            <div class="card">
-                <h3>Reportes</h3>
-                <p class="large">Próximamente</p>
-                <a href="{% url 'administrador:reportes' %}" class="card-link">Ir a reportes</a>
-            </div>
-        </section>
+    <!-- Ventas recientes -->
+    <section class="block">
+      <div class="block-header">
+        <h3>Ventas recientes</h3>
+        <p class="block-subtitle">Últimas ventas registradas en el sistema.</p>
+      </div>
 
-        <section class="recent">
-            <h3>Ventas recientes</h3>
-            {% if ventas_recentes %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Vendedor</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for v in ventas_recentes %}
-                    <tr>
-                        <td>{{ v.fecha }}</td>
-                        <td>{{ v.vendedor.username }}</td>
-                        <td>{{ v.resumen_productos }}</td>
-                        <td>{{ v.total }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>No hay ventas recientes.</p>
-            {% endif %}
-        </section>
-    </main>
+      {% if ventas_recientes %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Vendedor</th>
+            <th>Productos</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in ventas_recientes %}
+          <tr>
+            <td>{{ v.fecha_hora|date:"Y-m-d H:i" }}</td>
+            <td>{{ v.vendedor.username }}</td>
+            <td class="desc">{{ v.resumen_productos }}</td>
+            <td>${{ v.total|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="empty-state">No hay ventas recientes.</p>
+      {% endif %}
+    </section>
+
+    <!-- Productos recientes -->
+    <section class="block">
+      <div class="block-header">
+        <h3>Productos recientes</h3>
+        <p class="block-subtitle">Últimos productos agregados o actualizados.</p>
+      </div>
+
+      {% if productos_recientes %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Proveedor</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Asignado a</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in productos_recientes %}
+          <tr>
+            <td>{{ p.proveedor_nombre }}</td>
+            <td>{{ p.nombre }}</td>
+            <td class="desc">{{ p.descripcion|default:"-" }}</td>
+            <td>${{ p.precio|floatformat:2 }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              {% if p.asignado_a %}
+                <span class="badge ok">{{ p.asignado_a.username }}</span>
+              {% else %}
+                <span class="badge warn">Sin asignar</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'administrador:asignar_producto' p.id %}"
+                 class="btn small primary">
+                {% if p.asignado_a %}Reasignar{% else %}+ Asignar{% endif %}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="empty-state">No hay productos registrados aún.</p>
+      {% endif %}
+    </section>
+
+  </div>
 </div>
+
 {% endblock %}

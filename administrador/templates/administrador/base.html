@@ -16,8 +16,13 @@
 </header>
 
 <nav>
+    <form method="post" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">
+                        Cerrar Sesión
+                    </button>
     <a href="{% url 'administrador:index' %}">Inicio</a>
-    <a href="{% url 'productos:lista_productos' %}">Productos</a>
+    <a href="{% url 'administrador:ver_productos' %}">Productos</a>
     <a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a>
     <a href="{% url 'administrador:reportes' %}">Reportes</a>
 </nav>

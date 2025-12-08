@@ -9,33 +9,65 @@
         <!-- Columna de Productos -->
         <div class="products-column">
             <div class="card">
-                <div class="card-header">
-                    <h2>📦 Productos Disponibles</h2>
-                    <span class="badge">{{ productos.count }} productos</span>
+                <div class="card-header products-header">
+                    <div>
+                        <h2>Productos Disponibles</h2>
+                        <span class="badge">{{ productos.count }} productos</span>
+                    </div>
+
+                    <!-- 🔍 Buscador con X (solo frontend, sin recarga) -->
+                    <form method="get" class="search-form" id="product-search-form">
+                        <div class="search-input-wrapper">
+                            <input
+                                type="text"
+                                name="q"
+                                id="search-input"
+                                placeholder="Buscar producto..."
+                                value="{{ termino }}"
+                                class="search-input"
+                                autocomplete="off"
+                            >
+                            <button type="button" class="search-clear" id="search-clear">
+                                ✕
+                            </button>
+                        </div>
+                    </form>
                 </div>
+
                 <div class="card-body">
                     {% if productos %}
                     <div class="products-grid">
                         {% for producto in productos %}
-                        <div class="product-card">
+                        <div class="product-card"
+                             data-name="{{ producto.nombre|lower }}"
+                             data-desc="{{ producto.descripcion|default:''|lower }}">
+                            {% if producto.stock > 0 %}
                             <a href="{% url 'ventas:agregar_producto' producto.id %}" class="product-link">
                                 <div class="product-content">
                                     <h3>{{ producto.nombre }}</h3>
                                     <p class="product-description">
-                                        {{ producto.descripcion|truncatechars:40|default:"Sin descripción" }}
+                                        {{ producto.descripcion|default:"Sin descripción"|truncatechars:40 }}
                                     </p>
                                     <div class="product-footer">
-                                        <span class="product-price">${{ producto.precio }}</span>
-                                        <span class="stock-badge {% if producto.stock > 10 %}in-stock{% elif producto.stock > 0 %}low-stock{% else %}out-stock{% endif %}">
-                                            {% if producto.stock > 0 %}
+                                        <span class="product-price">${{ producto.precio|floatformat:2 }}</span>
+                                        <span class="stock-badge {% if producto.stock > 10 %}in-stock{% elif producto.stock > 0 %}low-stock{% endif %}">
                                             Stock: {{ producto.stock }}
-                                            {% else %}
-                                            Agotado
-                                            {% endif %}
                                         </span>
                                     </div>
                                 </div>
                             </a>
+                            {% else %}
+                            <div class="product-content disabled">
+                                <h3>{{ producto.nombre }}</h3>
+                                <p class="product-description">
+                                    {{ producto.descripcion|default:"Sin descripción"|truncatechars:40 }}
+                                </p>
+                                <div class="product-footer">
+                                    <span class="product-price">${{ producto.precio|floatformat:2 }}</span>
+                                    <span class="stock-badge out-stock">Agotado</span>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -43,9 +75,7 @@
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
                         <p>No hay productos disponibles</p>
-                        <a href="{% url 'productos:lista_productos' %}" class="btn primary">
-                            ➕ Agregar Productos
-                        </a>
+                        <p class="small">El administrador debe asignar productos al vendedor.</p>
                     </div>
                     {% endif %}
                 </div>
@@ -60,23 +90,23 @@
                     <span class="badge">{{ venta.detalles.count }} items</span>
                 </div>
                 <div class="card-body cart-items">
-                    {% if venta.detalles.all %}
-                    {% for detalle in venta.detalles.all %}
-                    <div class="cart-item">
-                        <div class="item-info">
-                            <h4>{{ detalle.producto.nombre }}</h4>
-                            <small>{{ detalle.cantidad }} x ${{ detalle.precio_unitario }}</small>
+                    {% if venta.detalles.count > 0 %}
+                        {% for detalle in venta.detalles.all %}
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <h4>{{ detalle.producto.nombre }}</h4>
+                                <small>{{ detalle.cantidad }} x ${{ detalle.precio_unitario|floatformat:2 }}</small>
+                            </div>
+                            <div class="item-actions">
+                                <span class="item-subtotal">${{ detalle.subtotal|floatformat:2 }}</span>
+                                <a href="{% url 'ventas:eliminar_detalle' detalle.id %}"
+                                   class="btn danger small"
+                                   onclick="return confirm('¿Eliminar este producto de la venta?')">
+                                    🗑️
+                                </a>
+                            </div>
                         </div>
-                        <div class="item-actions">
-                            <span class="item-subtotal">${{ detalle.subtotal }}</span>
-                            <a href="{% url 'ventas:eliminar_detalle' detalle.id %}" 
-                               class="btn danger small"
-                               onclick="return confirm('¿Eliminar este producto de la venta?')">
-                                🗑️
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
+                        {% endfor %}
                     {% else %}
                     <div class="empty-state">
                         <div class="empty-icon">🛒</div>
@@ -89,36 +119,38 @@
                 <div class="card-footer">
                     <!-- Total -->
                     <div class="total-section">
-                        <h3>Total: $<span id="venta-total">{{ venta.total }}</span></h3>
+                        <h3>Total: $
+                            <span id="venta-total" data-venta-total="{{ venta.total }}">
+                                {{ venta.total|floatformat:2 }}
+                            </span>
+                        </h3>
                     </div>
 
                     <!-- Formulario de Pago -->
                     <form method="post" action="{% url 'ventas:finalizar_venta' venta.id %}"
-                          id="pago-form">
+                          id="pago-form" data-venta-id="{{ venta.id }}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="paga_con">Paga con:</label>
-                            <input type="number" step="0.01" min="0" 
-                                   class="form-control" 
-                                   id="paga_con" 
-                                   name="paga_con" 
-                                   required
-                                   data-venta-id="{{ venta.id }}">
+                            <input type="number" step="0.01" min="0"
+                                   class="form-control"
+                                   id="paga_con"
+                                   name="paga_con"
+                                   required>
                             <div id="cambio-mensaje" class="cambio-display hidden"></div>
                         </div>
 
                         <!-- Botones de Acción -->
                         <div class="buttons-grid">
                             <button type="submit" class="btn success">
-                                ✅ Finalizar Venta
+                                 Finalizar Venta
                             </button>
 
-                            <a href="{% url 'ventas:cancelar_venta' venta.id %}" 
+                            <a href="{% url 'ventas:cancelar_venta' venta.id %}"
                                class="btn danger"
                                onclick="return confirm('¿Cancelar venta actual? Se restaurará el stock.')">
-                                ❌ Cancelar Venta
+                                 Cancelar Venta
                             </a>
-
                         </div>
                     </form>
                 </div>
@@ -126,16 +158,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    window.ventaData = {
-        total: parseFloat(document.querySelector('[data-venta-total]')?.dataset.ventaTotal || 0),
-        ventaId: parseInt(document.querySelector('[data-venta-id]')?.dataset.ventaId || 0)
-    };
-</script>
-
-<div data-venta-total="{{ venta.total }}" data-venta-id="{{ venta.id }}"></div>
-
 {% endblock %}

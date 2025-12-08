@@ -1,6 +1,6 @@
 from django import forms
 from .models import Venta, DetalleVenta
-from productos.models import Producto
+from proveedores.models import Producto 
 
 class DetalleVentaForm(forms.ModelForm):
     producto = forms.ModelChoiceField(

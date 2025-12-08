@@ -1,0 +1,114 @@
+{% extends "administrador/base.html" %}
+{% load static %}
+
+{% block title %}Reportes - Administrador{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+
+<div class="admin-main">
+
+    <header class="admin-header">
+        <h2>Reportes del sistema</h2>
+        <p class="subtitle">Resumen general de las ventas y productos</p>
+    </header>
+
+    <!-- === TARJETAS RÁPIDAS === -->
+    <section class="cards">
+        <div class="card">
+            <h3>Ventas hoy</h3>
+            <p class="large">${{ ventas_dia|floatformat:2 }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Ventas del mes</h3>
+            <p class="large">${{ ventas_mes|floatformat:2 }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Ingresos totales</h3>
+            <p class="large">${{ ingresos_totales|floatformat:2 }}</p>
+        </div>
+    </section>
+
+    <!-- === PRODUCTOS MÁS VENDIDOS === -->
+    <section class="recent">
+        <h3>Productos más vendidos</h3>
+
+        {% if productos_populares %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Total Vendidos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in productos_populares %}
+                <tr>
+                    <td>{{ p.producto__nombre }}</td>
+                    <td>{{ p.total_vendidos }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay datos disponibles.</p>
+        {% endif %}
+    </section>
+
+    <!-- === STOCK BAJO === -->
+    <section class="recent">
+        <h3>Productos con Stock Bajo</h3>
+
+        {% if stock_bajo %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in stock_bajo %}
+                <tr>
+                    <td>{{ s.nombre }}</td>
+                    <td>{{ s.stock }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay productos con stock bajo.</p>
+        {% endif %}
+    </section>
+
+    <!-- === RENDIMIENTO DE VENDEDORES === -->
+    <section class="recent">
+        <h3>Rendimiento de vendedores</h3>
+
+        {% if rendimiento_vendedores %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Vendedor</th>
+                    <th>Total Vendido</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in rendimiento_vendedores %}
+                <tr>
+                    <td>{{ v.vendedor__username }}</td>
+                    <td>${{ v.total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay ventas registradas aún.</p>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

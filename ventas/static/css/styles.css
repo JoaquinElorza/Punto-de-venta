@@ -14,6 +14,7 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+
 /* Reset y Base */
 * {
     margin: 0;
@@ -94,6 +95,31 @@ body {
 
 .logout-btn:active {
     transform: translateY(0);
+}
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 6px 28px 6px 8px; /* espacio a la derecha para la X */
+}
+
+.search-clear {
+    position: absolute;
+    right: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #94a3b8;
+    padding: 0;
+    line-height: 1;
+}
+
+.search-clear:hover {
+    color: #475569;
 }
 
 /* Layout Principal */
@@ -555,6 +581,7 @@ body {
 .card, .product-card, .cart-item {
     animation: fadeIn 0.5s ease-out;
 }
+
 
 /* Responsive */
 @media (max-width: 768px) {

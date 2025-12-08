@@ -1,0 +1,20 @@
+{% extends "administrador/base.html" %}
+{% block title %}Asignar producto{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Asignar producto a vendedor</h2>
+    <p><strong>Producto:</strong> {{ producto.nombre }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <label for="vendedor_id">Selecciona vendedor:</label>
+        <select name="vendedor_id" id="vendedor_id" required>
+            {% for v in vendedores %}
+            <option value="{{ v.id }}">{{ v.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn primary">Asignar</button>
+        <a href="{% url 'administrador:index' %}" class="btn secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
