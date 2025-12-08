@@ -1,4 +1,12 @@
-# requirements-deploy.txt
-fabric>=2.7
-invoke>=1.7
-paramiko>=2.11  # Para conexiones SSH mejoradas
+bcrypt==5.0.0
+cffi==2.0.0
+cryptography==46.0.3
+decorator==5.2.1
+Deprecated==1.3.1
+fabric==3.2.2
+invoke==2.2.1
+paramiko==4.0.0
+pycparser==2.23
+PyNaCl==1.6.1
+python-decouple==3.8
+wrapt==2.0.1
