@@ -1,6 +1,6 @@
 // POS - JS mínimo para buscador en vivo
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('POS JS cargado ✅');
+    console.log('POS JS cargado ');
 
     const form = document.getElementById('product-search-form');
     const input = document.getElementById('search-input');
