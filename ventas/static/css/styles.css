@@ -103,7 +103,7 @@ body {
 }
 
 .search-input {
-    padding: 6px 28px 6px 8px; /* espacio a la derecha para la X */
+    padding: 6px 28px 6px 8px; 
 }
 
 .search-clear {
