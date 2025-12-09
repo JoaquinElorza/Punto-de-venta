@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Proveedor</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'proveedores/css/styl.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
+<body class="proveedor-dashboard-page">
     <!-- Encabezado -->
      <h1>Bienvenido {{ request.user.username }}</h1>
     <a href="{% url 'administrador:index' %}" class="btn">Atras</a>

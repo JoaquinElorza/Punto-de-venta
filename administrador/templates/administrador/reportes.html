@@ -14,20 +14,23 @@
     </header>
 
     <!-- === TARJETAS RÁPIDAS === -->
-    <section class="cards">
-        <div class="card">
+    <section class="reports-grid">
+        <div class="report-card">
             <h3>Ventas hoy</h3>
-            <p class="large">${{ ventas_dia|floatformat:2 }}</p>
+            <p class="metric">${{ ventas_dia|floatformat:2 }}</p>
+            <p class="hint">Ticket promedio: ${{ ticket_promedio_dia|default:"0.00" }}</p>
         </div>
 
-        <div class="card">
+        <div class="report-card">
             <h3>Ventas del mes</h3>
-            <p class="large">${{ ventas_mes|floatformat:2 }}</p>
+            <p class="metric">${{ ventas_mes|floatformat:2 }}</p>
+            <p class="hint">Actualizado al día de hoy</p>
         </div>
 
-        <div class="card">
+        <div class="report-card">
             <h3>Ingresos totales</h3>
-            <p class="large">${{ ingresos_totales|floatformat:2 }}</p>
+            <p class="metric">${{ ingresos_totales|floatformat:2 }}</p>
+            <p class="hint">Incluye histórico</p>
         </div>
     </section>
 
@@ -36,22 +39,24 @@
         <h3>Productos más vendidos</h3>
 
         {% if productos_populares %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Total Vendidos</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in productos_populares %}
-                <tr>
-                    <td>{{ p.producto__nombre }}</td>
-                    <td>{{ p.total_vendidos }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Total Vendidos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos_populares %}
+                    <tr>
+                        <td>{{ p.producto__nombre }}</td>
+                        <td>{{ p.total_vendidos }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No hay datos disponibles.</p>
         {% endif %}
@@ -62,22 +67,24 @@
         <h3>Productos con Stock Bajo</h3>
 
         {% if stock_bajo %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Stock</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in stock_bajo %}
-                <tr>
-                    <td>{{ s.nombre }}</td>
-                    <td>{{ s.stock }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in stock_bajo %}
+                    <tr>
+                        <td>{{ s.nombre }}</td>
+                        <td>{{ s.stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No hay productos con stock bajo.</p>
         {% endif %}
@@ -88,22 +95,24 @@
         <h3>Rendimiento de vendedores</h3>
 
         {% if rendimiento_vendedores %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Vendedor</th>
-                    <th>Total Vendido</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for v in rendimiento_vendedores %}
-                <tr>
-                    <td>{{ v.vendedor__username }}</td>
-                    <td>${{ v.total|floatformat:2 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Total Vendido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in rendimiento_vendedores %}
+                    <tr>
+                        <td>{{ v.vendedor__username }}</td>
+                        <td>${{ v.total|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No hay ventas registradas aún.</p>
         {% endif %}

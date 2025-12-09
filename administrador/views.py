@@ -110,3 +110,12 @@ def asignar_producto(request, producto_id):
         "producto": producto,
         "vendedores": vendedores
     })
+
+
+@staff_member_required
+def quitar_asignacion_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    if request.method == "POST":
+        producto.asignado_a = None
+        producto.save()
+    return redirect("administrador:index")

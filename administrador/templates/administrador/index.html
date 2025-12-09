@@ -16,38 +16,29 @@
 
   <!-- Cards resumen -->
   <section class="cards">
-    <div class="card">
+    <a class="card card-link-block" href="{% url 'administrador:dashboard_productos' %}">
       <div class="card-icon">📦</div>
-      <h3>Productos registrados</h3>
+      <h3>Registrar Productos</h3>
       <p class="large">{{ productos_count|default:"0" }}</p>
-      <a href="{% url 'administrador:dashboard_productos' %}" class="card-link">
-        Gestionar productos
-      </a>
-    </div>
+    </a>
 
-    <div class="card">
+    <a class="card card-link-block" href="{% url 'administrador:ventas_historial' %}">
       <div class="card-icon">💰</div>
       <h3>Ventas totales</h3>
       <p class="large">
         {% if ventas_total %}
-          ${{ ventas_total|floatformat:2 }}
+          {{ ventas_total }}
         {% else %}
-          $0.00
+          0
         {% endif %}
       </p>
-      <a href="{% url 'administrador:ventas_historial' %}" class="card-link">
-        Ver historial de ventas
-      </a>
-    </div>
+    </a>
 
-    <div class="card">
+    <a class="card card-link-block" href="{% url 'administrador:reportes' %}">
       <div class="card-icon">📊</div>
       <h3>Reportes</h3>
       <p class="large">Ver reportes</p>
-      <a href="{% url 'administrador:reportes' %}" class="card-link">
-        Ir a reportes
-      </a>
-    </div>
+    </a>
   </section>
 
   <!-- Contenido en dos columnas -->
@@ -126,6 +117,12 @@
                  class="btn small primary">
                 {% if p.asignado_a %}Reasignar{% else %}+ Asignar{% endif %}
               </a>
+              {% if p.asignado_a %}
+              <form method="post" action="{% url 'administrador:quitar_producto' p.id %}" class="inline-form" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn small danger">Quitar</button>
+              </form>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}

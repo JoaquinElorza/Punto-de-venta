@@ -113,6 +113,62 @@ body {
   box-shadow: 0 6px 16px rgba(15, 23, 36, 0.12);
 }
 
+.card-link-block {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-link-block:hover {
+  text-decoration: none;
+}
+
+.dashboard .card .trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.dashboard .card .trend.up {
+  color: var(--success-color);
+}
+
+.dashboard .card .trend.down {
+  color: var(--danger-color);
+}
+
+.report-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(15, 23, 36, 0.08);
+  margin-bottom: 20px;
+}
+
+.report-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table thead tr {
+  background: #f3f5f9;
+}
+
+.report-table th,
+.report-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.report-table tbody tr:hover {
+  background: #f8fafc;
+}
+
 .dashboard .card-icon {
   font-size: 24px;
   margin-bottom: 8px;
@@ -141,6 +197,40 @@ body {
 
 .dashboard .card-link:hover {
   text-decoration: underline;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.report-card {
+  background: linear-gradient(145deg, #ffffff, #f7f9fc);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 18px rgba(15, 23, 36, 0.08);
+}
+
+.report-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.report-card .metric {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 10px 0 6px;
+  color: #1f2937;
+}
+
+.report-card .hint {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 /* Tablas */
@@ -1426,4 +1516,248 @@ body.login-page {
 .password-toggle:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+/* =======================================
+   5) PROVEEDORES (FORMULARIOS Y DASHBOARD)
+   ======================================= */
+
+/* Botones sueltos usados en estas vistas */
+.btn-secondary {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(135deg, #4b5563, #374151);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #111827, #000000);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--danger-color), #b91c1c);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
+}
+
+/* Formularios de proveedores */
+.proveedor-form-page {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 40px;
+  color: #333;
+}
+
+.proveedor-form-page h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.proveedor-form-page form {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.proveedor-form-page form p {
+  margin-bottom: 20px;
+}
+
+.proveedor-form-page label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.proveedor-form-page input,
+.proveedor-form-page textarea,
+.proveedor-form-page select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccd0d5;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.proveedor-form-page input:focus,
+.proveedor-form-page textarea:focus,
+.proveedor-form-page select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.proveedor-form-page .errorlist {
+  background: #ffe6e6;
+  border: 1px solid #e74c3c;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  color: #c0392b;
+  list-style: none;
+}
+
+.proveedor-form-page .form-actions,
+.proveedor-confirm-page .form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.proveedor-form-page .form-actions button {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.proveedor-form-page .form-actions button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.proveedor-form-page .form-actions .btn-secondary,
+.proveedor-confirm-page .form-actions .btn-secondary {
+  text-align: center;
+}
+
+/* Confirmación de eliminación */
+.proveedor-confirm-page {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 40px;
+  color: #333;
+}
+
+.proveedor-confirm-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+/* Dashboard de proveedores */
+.proveedor-dashboard-page {
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 20px;
+  background-color: var(--bg);
+  color: #222;
+}
+
+.proveedor-dashboard-page h1,
+.proveedor-dashboard-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+.proveedor-dashboard-page .btn {
+  display: inline-block;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  background-color: transparent;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: #222;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.proveedor-dashboard-page .btn:hover {
+  background-color: #e2e8f0;
+}
+
+.proveedor-dashboard-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(15, 23, 36, 0.08);
+}
+
+.proveedor-dashboard-page thead {
+  background-color: #f3f5f9;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.proveedor-dashboard-page th,
+.proveedor-dashboard-page td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+
+.proveedor-dashboard-page tbody tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.proveedor-dashboard-page tbody tr:hover {
+  background-color: #eef3ff;
+}
+
+.proveedor-dashboard-page a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.proveedor-dashboard-page a:hover {
+  color: var(--danger);
+}
+
+.proveedor-dashboard-page a[href*="agregar_producto_proveedor"] {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: var(--accent);
+  color: #fff !important;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 10px;
+  border: none;
+  transition: 0.2s ease;
+}
+
+.proveedor-dashboard-page a[href*="agregar_producto_proveedor"]:hover {
+  background-color: #244fbd;
 }

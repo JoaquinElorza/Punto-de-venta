@@ -19,6 +19,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path("asignar-producto/<int:producto_id>/", views.asignar_producto, name="asignar_producto"),
+    path("quitar-producto/<int:producto_id>/", views.quitar_asignacion_producto, name="quitar_producto"),
     path("productos/", dashboard_proveedor, name="dashboard_productos"),
     path("reportes/", views.reportes, name="reportes"),
     path("ver-productos/", views.ver_productos, name="ver_productos"),
@@ -26,7 +27,6 @@ urlpatterns = [
 
     
 ]
-
 
 
 
