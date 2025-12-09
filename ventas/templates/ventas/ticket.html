@@ -5,20 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Ticket de Venta</title>
-
-    <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
+<body class="ticket-page">
 
 <div class="ticket" id="ticket">
     <div class="center">
-        <div class="bold">{{ negocio_nombre }}</div>
-        <div>{{ negocio_direccion }}</div>
-        <div>Tel: {{ negocio_telefono }}</div>
+        <div class="bold">{{ negocio_nombre|default:"Punto de Venta" }}</div>
+        <div>{{ negocio_direccion|default:"" }}</div>
+        <div>Tel: <span id="ticket-telefono" data-default-telefono="2202643707">{{ negocio_telefono }}</span></div>
         <div class="line"></div>
-        <div>Ticket: {{ folio }}</div>
-        <div>Fecha: {{ fecha }} {{ hora }}</div>
-        <div>Cajero: {{ cajero }}</div>
+        <div>Ticket: <span id="ticket-folio">{{ venta.id|stringformat:"05d" }}</span></div>
+        <div>Fecha: <span id="ticket-fecha">{{ venta.fecha_hora|date:"Y-m-d" }}</span> <span id="ticket-hora">{{ venta.fecha_hora|date:"H:i" }}</span></div>
+        <div>Cajero: <span id="ticket-cajero" data-default-cajero="1">{{ venta.vendedor.username }}</span></div>
     </div>
 
     <div class="line"></div>
@@ -33,12 +32,12 @@
         </tr>
         </thead>
         <tbody>
-        {% for item in productos %}
+        {% for detalle in venta.detalles.all %}
         <tr>
-            <td>{{ item.nombre }}</td>
-            <td>{{ item.cantidad }}</td>
-            <td>{{ item.precio }}</td>
-            <td>{{ item.total }}</td>
+            <td>{{ detalle.producto.nombre }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>{{ detalle.precio_unitario|floatformat:2 }}</td>
+            <td>{{ detalle.subtotal|floatformat:2 }}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -49,23 +48,23 @@
     <table class="totales">
         <tr>
             <td class="right bold">Subtotal:</td>
-            <td class="right">${{ subtotal }}</td>
+            <td class="right" id="ticket-subtotal">${{ venta.total|floatformat:2 }}</td>
         </tr>
         <tr>
             <td class="right bold">IVA:</td>
-            <td class="right">${{ iva }}</td>
+            <td class="right" id="ticket-iva">$0.00</td>
         </tr>
         <tr>
             <td class="right bold">TOTAL:</td>
-            <td class="right bold">${{ total }}</td>
+            <td class="right bold" id="ticket-total">${{ venta.total|floatformat:2 }}</td>
         </tr>
         <tr>
             <td class="right bold">Pago:</td>
-            <td class="right">${{ pago }}</td>
+            <td class="right" id="ticket-pago">${{ venta.paga_con|default_if_none:"" }}</td>
         </tr>
         <tr>
             <td class="right bold">Cambio:</td>
-            <td class="right">${{ cambio }}</td>
+            <td class="right" id="ticket-cambio">${{ venta.cambio|default_if_none:"" }}</td>
         </tr>
     </table>
 
@@ -74,7 +73,10 @@
     </div>
 </div>
 
-<button id="btn-descargar" onclick="descargarTicket()">Descargar ticket</button>
+<div class="ticket-actions">
+    <button class="btn primary" id="btn-descargar" onclick="descargarTicket()">Descargar ticket</button>
+    <button class="btn secondary" id="btn-salir" data-salir-url="{% url 'ventas:punto_venta' %}">Salir</button>
+</div>
 
 <script src="{% static 'js/ticket.js' %}"></script>
 </body>

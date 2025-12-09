@@ -6,33 +6,39 @@
     <title>{% block title %}Panel Administrador{% endblock %}</title>
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
 
-<header>
-    Panel del Administrador
+<header class="navbar">
+    <div class="nav-container">
+        <a class="nav-logo" href="{% url 'administrador:index' %}">Panel del Administrador</a>
+
+        <div class="nav-user">
+            <a href="{% url 'administrador:index' %}">Inicio</a>
+            <a href="{% url 'administrador:ver_productos' %}">Productos</a>
+            <a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a>
+            <a href="{% url 'administrador:reportes' %}">Reportes</a>
+
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
 </header>
 
-<nav>
-    <form method="post" action="{% url 'logout' %}" class="logout-form">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn">
-                        Cerrar Sesión
-                    </button>
-    <a href="{% url 'administrador:index' %}">Inicio</a>
-    <a href="{% url 'administrador:ver_productos' %}">Productos</a>
-    <a href="{% url 'administrador:ventas_historial' %}">Historial de ventas</a>
-    <a href="{% url 'administrador:reportes' %}">Reportes</a>
-</nav>
-
-<div class="container">
+<main class="main-content">
     {% block content %}{% endblock %}
-</div>
+</main>
 
-<footer>
-    Punto de Venta – Administrador
+<footer class="login-footer">
+    <p class="footer-text">
+        Punto de Venta – Administrador
+    </p>
 </footer>
 
 </body>
