@@ -138,9 +138,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+#STATICFILES_DIRS = [
+#    BASE_DIR / 'static',
+#]
+BASE_DIR = Path('/srv/puntoVenta')
 
 
 # Default primary key field type
